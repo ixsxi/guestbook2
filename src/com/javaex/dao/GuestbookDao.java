@@ -139,38 +139,36 @@ public class GuestbookDao {
 		
 		
 		//등록하기
-		public int Insert(GuestbookVo guestbookvo) {
-			int count = -1;
+		 public int Insert(GuestbookVo guestbookVo) {
+		      int count = 0;
+		      getConnection();
 
-			getConnection();
+		      try {
 
-			try {
-				// 3. SQL문 준비 / 바인딩 / 실행
-				String query = "";
-				query += " insert into guestbook ";
-				query += " values(seq_no.nextval, ?, ?, ?, sysdate) ";
-				
-				pstmt = conn.prepareStatement(query);
+		         // 3. SQL문 준비 / 바인딩 / 실행
+		         String query = ""; 
+		         query += " insert into guestbook ";
+		         query += " values(seq_no.nextval, ?, ?, ?, SYSDATE) ";
+		         
 
-				pstmt.setString(1, guestbookvo.getName());
-				pstmt.setString(2, guestbookvo.getPassword());
-				pstmt.setString(3, guestbookvo.getContent());
-				
-				count = pstmt.executeUpdate();
+		         pstmt = conn.prepareStatement(query);
 
-				// 4.결과처리
-				System.out.println(count + "건 등록");
+		         pstmt.setString(1, guestbookVo.getName());
+		         pstmt.setString(2, guestbookVo.getPassword());
+		         pstmt.setString(3, guestbookVo.getContent());
 
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		         count = pstmt.executeUpdate();
 
-			close();
+		         // 4.결과처리
+		         // System.out.println("[" + count + "건 추가되었습니다.]");
 
-			return count; // 성공갯수 리턴
-			
-		}
+		      } catch (SQLException e) {
+		         System.out.println("error:" + e);
+		      }
+		      close();
+		      return count;
+		   }
+
 		
 		
 		//게스트북 리스트 가져오기 메소드

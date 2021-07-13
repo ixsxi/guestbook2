@@ -3,7 +3,6 @@ package com.javaex.controller;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.javaex.dao.GuestbookDao;
+import com.javaex.util.WebUtil;
 import com.javaex.vo.GuestbookVo;
 
 
@@ -39,8 +39,35 @@ public class GuestController extends HttpServlet {
 			
 			request.setAttribute("gList", guestbookList);
 			
-			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/list.jsp");
-			rd.forward(request, response);	
+			WebUtil.forward(request, response, "/WEB-INF/list.jsp");	
+			
+		}else if("insert".equals(action)) {
+	         System.out.println("[추가]");
+	         
+	         String name = request.getParameter("name");
+	         String password = request.getParameter("password");
+	         String content = request.getParameter("content");
+	         
+	         GuestbookVo guestbookVo = new GuestbookVo(name, password, content);
+	         
+	         GuestbookDao guestbookDao = new GuestbookDao();
+	         guestbookDao.Insert(guestbookVo);
+	         
+	         WebUtil.redirect(request, response, "/guestbook2/gbc?action=list");
+	         
+	      }else if("dform".equals(action)) {
+			System.out.println("삭제");
+			
+			WebUtil.forward(request, response, "/WEB-INF/deleteForm.jsp");
+		}else if("delete".equals(action)) {
+			int no = Integer.parseInt(request.getParameter("no"));
+			String pass = request.getParameter("password");
+			
+			GuestbookVo guestbookVo = new GuestbookVo(no,pass);
+			GuestbookDao guestbookDao = new GuestbookDao();
+			guestbookDao.delete(guestbookVo);
+			
+			WebUtil.redirect(request, response, "/guestbook2/gbc?action=list");
 			
 		}
 		
